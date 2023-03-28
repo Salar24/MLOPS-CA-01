@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Predictions</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        background-color: #333;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+      table {
+        border-collapse: collapse;
+        margin: 20px auto;
+        width: 80%;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Predicted and Actual</h1>
+    <table>
+      <tr>
+        <th>Predicted Closing</th>
+        <th>Actual Closing</th>
+        <th>Date of Closing</th>
+        <th>% Closing of Prediction wrt Actual</th>
+      </tr>
+      {% for i in range(pred|length) %}
+        <tr>
+          <td>{{ pred[i] }}</td>
+          <td>{{ actual[i] }}</td>
+          <td>{{ dates[i] }}</td>
+          <td>{{ pred[i] / actual[i] * 100 }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
