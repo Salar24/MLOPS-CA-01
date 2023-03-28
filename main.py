@@ -24,7 +24,7 @@ def predict():
     data = data.reset_index()
     latest_data = data.iloc[-1].to_dict()
     print(latest_data)
-
+    print("Here")
     X = pd.DataFrame({'Open': data['Open'].values, 'High': data['High'].values, 'Low': data['Low'].values})
     y = data['Close'].values
     model.fit(X, y)
