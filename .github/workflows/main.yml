@@ -1,25 +1,45 @@
-name: Workflow
+name: Pipeline
 
 on:
   push:
     branches:
-      - working_branch
-  workflow_dispatch:
-jobs:
-  code-analysis:
-    runs-on: ubuntu-latest
+    - development
+  pull_request:
+    branches:
+      - main
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Build code
+        run: |
+          pip install -r requirements.txt
+          python main.py
+      - name: Deploy code
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature'
+        run: |
+          # Replace this with your deploy command
+          echo "Deploying code"
+  build-main:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
         with:
-          python-version: 3.9
-          
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-          
-      - name: Run code
-        run: python main.py
+          ref: main
+      - name: Build code
+        run: |
+          pip install -r requirements.txt
+          python main.py
+      - name: Deploy to Jenkins
+        uses: appleboy/jenkins-action@master
+        with:
+          url: ${{ secrets.JENKINS_URL }}
+          user: ${{ secrets.JENKINS_USERNAME }}
+          token: ${{ secrets.JENKINS_TOKEN }}
+          job: 'My Deploy Job'
